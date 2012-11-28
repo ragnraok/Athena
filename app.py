@@ -21,7 +21,7 @@ db.init_app(app)
 db.app = app
 
 if __name__ == '__main__':
-    print 'Serving at http://127.0.0.1:8080/'
+    print 'Serving at http://127.0.0.1:8000/'
     prepare_run()
     WSGIServer(("localhost", 8000), app.wsgi_app).serve_forever()
     #app.run()

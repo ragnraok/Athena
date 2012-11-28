@@ -40,7 +40,7 @@ def register():
 
     # determine the user if exist
     u = User.query.filter_by(username=name).all()
-    if u is not None:
+    if len(u) > 0:
         return Response(status=406)
     else:
         new_user = User(username=name, email=mail, password=pwd)
@@ -63,16 +63,18 @@ def login():
     info = get_json_post_data()
     if info is None:
         return no_post_data
-    info = json.loads(request.data)
-    name_or_mail = info['username_or_mail']
-    pwd = info['password']
+    name_or_mail = info.get('username_or_mail', None)
+    pwd = info.get('password', None)
+    if name_or_mail is None or pwd is None:
+        return Response(status=400)
     user_list = User.query.filter(or_(User.username == name_or_mail,
                                       User.email == name_or_mail))
     user = user_list.first()
+    ip = request.remote_addr
     if user is None or not user.check_password(pwd):
         return user_not_exist_by_name(name_or_mail)
     else:
-        online_users.add_user(user)
+        online_users.add_user(ip, user)
         return jsonify(user_id=user.id)
 
 
@@ -105,7 +107,8 @@ def get_online_friends(user_id):
     Response json format:
         {'online_friends':
             [{'user_id': user_id,
-              'username': username}, ....]
+              'username': username,
+              'ip_addr': ip_addr}, ....]
             }
     If the user is not exist, return error code 400
     """
@@ -116,12 +119,13 @@ def get_online_friends(user_id):
         online_list = online_users.get_online_friends(user)
         # construct the return json
         return_json = []
-        for _id in online_list:
+        for ip, _id in online_list.items():
             user = User.query.get(_id)
             if user is not None:
                 return_json.append(
                     {'user_id': _id,
-                     'username': user.username}
+                     'username': user.username,
+                     'ip_addr': ip}
                 )
         return jsonify(online_friends=return_json)
 
@@ -142,7 +146,7 @@ def add_friend(user_id):
     info = get_json_post_data()
     if info is None:
         return no_post_data
-    to_user_id = info['friend_id']
+    to_user_id = info.get('friend_id', None)
     to_user = User.query.get(to_user_id)
     if to_user is None:
         return user_not_exist_by_id(to_user_id)

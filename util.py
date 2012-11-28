@@ -10,10 +10,20 @@ def get_json_post_data():
     """
     info = None
     if hasattr(request, 'json') and request.json is not None:
-        info = json.loads(request.json)
+        # shit?!
+        print request.json
+        data = request.json
+        if not data.endswith("\"}"):
+            data += "\"}"
+        info = json.loads(data)
         return info
     elif hasattr(request, 'data'):
-        info = json.loads(request.data)
+        # shit?!
+        print request.data
+        data = request.data
+        if not data.endswith("\"}"):
+            data += "\"}"
+        info = json.loads(data)
         return info
     else:
         return None

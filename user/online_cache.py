@@ -4,34 +4,35 @@
 # only store user id
 class UserListCache(object):
     def __init__(self):
-        self.user_list = []
+        self.user_dict = {}
 
-    def add_user(self, user):
-        if user.id not in self.user_list:
-            self.user_list.append(user.id)
+    def add_user(self, ip, user):
+        if user.id not in self.user_dict:
+            self.user_dict[user.id] = ip
 
     def delete_user(self, user):
         try:
-            self.user_list.remove(user.id)
+            del self.user_dict[user.id]
         except KeyError:
             pass
 
     def get_online_users(self):
-        return self.user_list
+        return self.user_dict.keys()
 
     def is_online(self, user):
-        if user in self.user_list:
+        if user in self.user_dict.keys():
             return True
         else:
             return False
 
     def get_online_friends(self, user):
+        print 'online user list %s' % self.user_dict
         friends = user.get_friends()
-        print 'friends is %s' % str(friends)
-        online_friends = filter(lambda user: user.id in self.user_list,
-                                friends)
-        print 'online user list is %s' % self.user_list
-        return online_friends
+        result = {}
+        for _id, ip in self.user_dict.items():
+            if _id in friends:
+                result[ip] = _id
+        return result
 
 
 online_users = UserListCache()

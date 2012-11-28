@@ -43,8 +43,9 @@ class User(db.Model):
             db.session.commit()
 
     def get_friends(self):
-        friend_result = RelationShip.query.filter_by(from_user=self.id)
-        return friend_result.all()
+        friend_relation_list = RelationShip.query.filter_by(from_user=self.id)
+        result = [_id.to_user for _id in friend_relation_list.all()]
+        return result
 
     def __repr__(self):
         return "<User %s>" % self.username

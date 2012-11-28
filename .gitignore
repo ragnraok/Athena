@@ -1,5 +1,5 @@
 git/
 *.pyc
 *.sqlite
-*.swp
+.*.swp
 

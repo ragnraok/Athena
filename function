@@ -9,7 +9,7 @@ for public chat room, the message store in redis? or just store in memory
 #finish a quite simple public chat room(Done)
 
 Parts:
-1. Database(I hope I can finish today)
+1. Database
 2. P2P
 3. Public Chat Room
 
@@ -22,3 +22,4 @@ password: MD5
 2012.11.28
 POST Data must set Content-Type: 'application/json'
 log system
+
