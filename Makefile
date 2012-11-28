@@ -1,0 +1,2 @@
+database:
+	python syncdb.py

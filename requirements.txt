@@ -1,0 +1,4 @@
+flask
+gevent
+Flask-SQLAlchemy
+alembic
