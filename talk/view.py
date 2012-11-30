@@ -21,7 +21,7 @@ from Athena.user.online_cache import online_users
 app = Blueprint('talk', __name__)
 
 
-@app.route('/launch_talk/<int:talk_to_user_id>', methods=('POST', ))
+@app.route('/launch_talk/<int:talk_to_user_id>/', methods=('POST', ))
 @require_auth
 def launch_talk(talk_to_user_id):
     """

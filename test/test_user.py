@@ -17,7 +17,6 @@ header_no_auth = {'Content-Type': 'application/json'}
 
 site = 'localhost'
 port = 8000
-method = "POST"
 register_url = "/user/register/"
 login_url = "/user/login/"
 logout_url = "/user/logout/"

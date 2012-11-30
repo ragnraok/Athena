@@ -11,17 +11,17 @@ def get_json_post_data():
     info = None
     if hasattr(request, 'json') and request.json is not None:
         # shit?!
-        print request.json
         data = request.json
         if not data.endswith("\"}"):
+            print 'data not complete'
             data += "\"}"
         info = json.loads(data)
         return info
     elif hasattr(request, 'data'):
         # shit?!
-        print request.data
         data = request.data
         if not data.endswith("\"}"):
+            print 'data not complete'
             data += "\"}"
         info = json.loads(data)
         return info

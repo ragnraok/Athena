@@ -78,7 +78,7 @@ def login():
     else:
         online_users.add_user(ip, user)
         talk_manager.add_user(user)
-        g.user = user  # store the logined user in g
+        #g.user = user  # store the logined user in g
         return jsonify(user_id=user.id)
 
 
