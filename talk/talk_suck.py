@@ -2,6 +2,8 @@ from gevent.event import Event
 from gevent import monkey
 monkey.patch_all()
 
+import time
+
 from Athena.user.online_cache import online_users
 
 
@@ -17,8 +19,11 @@ class TalkSuck(object):
         """
         sender want to talk to receiver
         """
+        print sender_id
         try:
-            self.talk_affairs[receiver_id] = sender_id
+            if self.talk_affairs.get(receiver_id, None) is None:
+                self.talk_affairs[receiver_id] = []
+            self.talk_affairs[receiver_id].append(sender_id)
             self.events[receiver_id].set()
             self.events[receiver_id].clear()
         except:
@@ -26,9 +31,11 @@ class TalkSuck(object):
 
     def tell_to_talk(self, user_id):
         self.events[user_id].wait()
+        time.sleep(0.1)
         try:
-            initiator_id = self.talk_affairs[user_id]
-            return initiator_id
+            initiator_list = self.talk_affairs[user_id]
+            del self.talk_affairs[user_id]
+            return initiator_list
         except:
             return None
 

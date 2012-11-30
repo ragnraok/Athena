@@ -59,8 +59,8 @@ def check_new_talk():
             no data
         Response:
             if someone want to talk to you, return
-            {'user_id': user_id, 'username': username,
-            'user_ip': user_ip}
+            {'senders': [{'user_id': user_id, 'username': username,
+            'user_ip': user_ip}, ....]}
         If the user is not exist, return 400
         If 'Keep-Alive' is not in the 'Connection' field, return 406
         If the user is not online, return 406
@@ -73,9 +73,15 @@ def check_new_talk():
         pass
     if user.id not in online_users.get_online_users():
         return Response("User %s is not online now" % user.username, 406)
-    initiator_id = talk_manager.tell_to_talk(user.id)
-    if initiator_id is not None:
-        initiator = User.query.get(initiator_id)
-        initiator_ip = online_users.get_online_user_ip(initiator)
-        return jsonify(user_id=initiator_id, username=initiator.username,
-                      user_ip=initiator_ip)
+    initiator_list = talk_manager.tell_to_talk(user.id)
+    if initiator_list is not None:
+        return_json = []
+        for initiator_id in initiator_list:
+            initiator = User.query.get(initiator_id)
+            initiator_ip = online_users.get_online_user_ip(initiator)
+            return_json.append(
+                {'user_id': initiator.id,
+                 'username': initiator.username,
+                 'user_ip': initiator_ip}
+            )
+        return jsonify(senders=return_json)
