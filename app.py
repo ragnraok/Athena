@@ -1,5 +1,8 @@
 from flask import Flask
 from gevent.wsgi import WSGIServer
+from gevent import monkey
+
+monkey.patch_socket()
 
 from Athena.database import db
 
@@ -16,6 +19,7 @@ def register(blueprint):
 def prepare_run():
     app.config.from_pyfile('config.py')
     register('user')
+    register('talk')
 
 db.init_app(app)
 db.app = app

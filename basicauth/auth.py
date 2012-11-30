@@ -1,5 +1,6 @@
 from functools import wraps
 from flask import request, Response
+from flask import g
 
 from Athena.user.models import User
 
@@ -16,6 +17,7 @@ def check_auth(username, password):
     if not success:
         return False
     else:
+        g.user = user
         return True
 
 

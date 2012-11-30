@@ -45,3 +45,4 @@ def user_not_exist_by_name(username):
     return error code 400
     """
     return Response("user %s is not exist" % username, 400)
+

@@ -4,6 +4,10 @@
 # only store user id
 class UserListCache(object):
     def __init__(self):
+        """
+        online users cache dict
+        {'user_id': ip_addr}
+        """
         self.user_dict = {}
 
     def add_user(self, ip, user):
@@ -33,6 +37,12 @@ class UserListCache(object):
             if _id in friends:
                 result[ip] = _id
         return result
+
+    def get_online_user_ip(self, user):
+        try:
+            return self.user_dict[user.id]
+        except:
+            return None
 
 
 online_users = UserListCache()
