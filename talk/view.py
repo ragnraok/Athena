@@ -12,7 +12,6 @@ from Athena.talk.talk_suck import talk_manager
 from Athena.user.online_cache import online_users
 
 
-##TODO
 # launch a talk, if A want to talk to B,
 # A tell server, server tell B, and let B
 # listen in a specific port(provide in protocol)
