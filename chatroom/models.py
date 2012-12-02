@@ -1,3 +1,5 @@
+import datetime
+
 from Athena.database import db
 from Athena.user.models import User
 
@@ -20,13 +22,19 @@ class ChatRoom(db.Model):
 
 class ChatRoomRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     chat_room_id = db.Column(db.Integer, db.ForeignKey("chat_room.id"),
                           nullable=False)
     record = db.Column(db.Text, nullable=False)
+    send_time = db.Column(db.DateTime, default=datetime.datetime.now)
 
-    def __init__(self, record, chat_room_id):
+    def __init__(self, sender_id, chat_room_id, record, send_time=None):
+        self.sender_id = sender_id
         self.chat_room_id = chat_room_id
         self.record = record
+        if send_time is None:
+            send_time = datetime.datetime.now()
+        self.send_time = send_time
 
     def __repr__(self):
         return "<ChatRoomRecord \'%s\' for room %s>" % (self.record, self.chat_room)

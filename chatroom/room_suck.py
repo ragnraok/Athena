@@ -48,3 +48,5 @@ class RoomSuck(object):
         if room_id not in self.room_users:
             return 0
         return len(self.room_users[room_id])
+
+room_manager = RoomSuck()
