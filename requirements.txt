@@ -1,4 +1,4 @@
 flask
-gevent
+gevent==2.0.21
 Flask-SQLAlchemy
 alembic

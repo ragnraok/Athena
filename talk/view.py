@@ -7,7 +7,7 @@ from flask import g
 from Athena.user.online_cache import online_users
 from Athena.user.models import User
 from Athena.basicauth.auth import require_auth
-from Athena.util import user_not_exist_by_id, get_json_post_data, no_post_data
+from Athena.util import user_not_exist_by_id, get_json_post_data, no_post_data, add_keep_alive
 from Athena.talk.talk_suck import talk_manager
 from Athena.user.online_cache import online_users
 
@@ -28,8 +28,7 @@ def launch_talk(talk_to_user_id):
     for current logined user want to talk to user for _user_id
         POST:
             no data
-        Response json format:
-            {'success': 'true'}
+        Response 200 if success
         If the user is not exist return error code 400
         If the user is not both online, return 406
     """
@@ -44,16 +43,16 @@ def launch_talk(talk_to_user_id):
     if talk_to_user_id not in online_users.get_online_users():
         return Response("User %s is not online now" % talk_to_user.username, 406)
     talk_manager.new_talk(user.id, talk_to_user_id)
-    return jsonify(success='true')
+    return Response("launch talk to %s" % talk_to_user.username, 200)
 
 
-@app.route('/check_new_talk/', methods=('GET', ))
+@app.route('/check_new_talk/', methods=('POST', ))
 @require_auth
 def check_new_talk():
     """
     Check new talk function, check if someone want to
     talk to you, please ensure 'Connection:Keep-Alive' for this
-    connection
+    connection(a long polling interface)
         GET:
             no data
         Response:
@@ -65,8 +64,9 @@ def check_new_talk():
         If the user is not online, return 406
     """
     connection = request.headers.get('Connection', None)
-    if connection is None or connection != 'Keep-Alive':
-        return Response("You should put \'Keep-Alive\' in \'Connection\' field", 406)
+    if connection is None or connection.lower() != 'keep-alive':
+        #return Response("You should put \'Keep-Alive\' in \'Connection\' field", 406)
+        return add_keep_alive()
     user = g.user
     if user is None:
         pass

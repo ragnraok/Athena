@@ -10,6 +10,14 @@ class UserListCache(object):
         """
         self.user_dict = {}
 
+    @classmethod
+    def create_instance(cls):
+        if hasattr(cls, '__instance'):
+            return cls.__instance
+        else:
+            cls.__instance = cls()
+            return cls.__instance
+
     def add_user(self, ip, user):
         if user.id not in self.user_dict:
             self.user_dict[user.id] = ip
@@ -24,13 +32,12 @@ class UserListCache(object):
         return self.user_dict.keys()
 
     def is_online(self, user):
-        if user in self.user_dict.keys():
+        if user.id in self.user_dict:
             return True
         else:
             return False
 
     def get_online_friends(self, user):
-        print 'online user list %s' % self.user_dict
         friends = user.get_friends()
         result = {}
         for _id, ip in self.user_dict.items():
@@ -45,4 +52,4 @@ class UserListCache(object):
             return None
 
 
-online_users = UserListCache()
+online_users = UserListCache.create_instance()

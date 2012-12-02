@@ -11,6 +11,8 @@ from Athena.user.online_cache import online_users
 from Athena.basicauth.auth import require_auth
 from Athena.util import get_json_post_data, no_post_data, user_not_exist_by_id, user_not_exist_by_name
 from Athena.talk.talk_suck import talk_manager
+from Athena.chatroom.room_suck import room_manager
+
 
 
 # contains login, logout
@@ -36,9 +38,12 @@ def register():
     info = get_json_post_data()
     if info is None:
         return no_post_data
-    name = info['username']
-    pwd = info['password']
-    mail = info['email']
+    name = info.get('username', None)
+    pwd = info.get('password', None)
+    mail = info.get('email', None)
+
+    if name is None or pwd is None or mail is None:
+        return Response(status=406)
 
     # determine the user if exist
     u = User.query.filter_by(username=name).all()
@@ -68,7 +73,7 @@ def login():
     name_or_mail = info.get('username_or_mail', None)
     pwd = info.get('password', None)
     if name_or_mail is None or pwd is None:
-        return Response(status=400)
+        return Response(status=406)
     user_list = User.query.filter(or_(User.username == name_or_mail,
                                       User.email == name_or_mail))
     user = user_list.first()
@@ -100,6 +105,7 @@ def logout():
     del g.user
     online_users.delete_user(user)
     talk_manager.delete_user(user.id)
+    room_manager.exit_all_room(user.id)
     return Response("logout success", 200)
 
 
@@ -206,7 +212,7 @@ def add_friend(user_id):
 
     # add friend
     from_user.add_friend(to_user)
-    return Response("Success add friend", status=200)
+    return Response("add friend %s" % to_user.username, status=200)
 
 
 @app.route('/get_user_info/<int:user_id>/', methods=('GET', ))

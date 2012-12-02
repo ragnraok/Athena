@@ -28,7 +28,7 @@ def get_json_post_data():
     else:
         return None
 
-no_post_data = Response(status=406)
+no_post_data = Response("you must post some data", status=406)
 
 
 def user_not_exist_by_id(user_id):
@@ -46,3 +46,38 @@ def user_not_exist_by_name(username):
     """
     return Response("user %s is not exist" % username, 400)
 
+
+def room_not_exist_by_id(room_id):
+    """
+    the room is not exist(by id)
+    return error code 400
+    """
+    return Response("room for id %s is not exist" % room_id, 400)
+
+
+def room_not_exist_by_name(room_name):
+    """
+    the room is not exist(by room_name)
+    return error code 400
+    """
+    return Response("room %s is not exist" % room_name, 400)
+
+
+def login_first():
+    """
+    tell user must login first
+    return error code 406
+    """
+    return Response("you must login first", 406)
+
+
+def not_in_room_by_id(room_id):
+    """
+    tell user your are not in this room
+    return error code 406
+    """
+    return Response("you are not in the room %s" % room_id, 406)
+
+
+def add_keep_alive():
+    return Response("You should put \'Keep-Alive\' in \'Connection\' field", 406)

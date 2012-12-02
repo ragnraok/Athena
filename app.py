@@ -20,6 +20,7 @@ def prepare_run():
     app.config.from_pyfile('config.py')
     register('user')
     register('talk')
+    register('chatroom')
 
 db.init_app(app)
 db.app = app

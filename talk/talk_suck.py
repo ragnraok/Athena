@@ -15,6 +15,14 @@ class TalkSuck(object):
         self.events = {}
         self.talk_affairs = {}
 
+    @classmethod
+    def create_instance(cls):
+        if hasattr(cls, "__instance"):
+            return cls.__instance
+        else:
+            cls.__instance = cls()
+            return cls.__instance
+
     def new_talk(self, sender_id, receiver_id):
         """
         sender want to talk to receiver
@@ -49,4 +57,4 @@ class TalkSuck(object):
         except:
             pass
 
-talk_manager = TalkSuck()
+talk_manager = TalkSuck.create_instance()

@@ -63,3 +63,7 @@ if __name__ == '__main__':
     print deli
     print 'test get_user_info'
     test(site, port, 'GET', get_user_info_url + "3/", header, dummy_json)
+
+    #print deli
+    #print 'test logout'
+    #test(site, port, 'POST', logout_url, header, dummy_json)
