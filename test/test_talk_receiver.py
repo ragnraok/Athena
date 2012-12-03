@@ -2,7 +2,7 @@ import json
 import httplib
 import time
 
-username = 'okone'
+username = 'ragnarok'
 password = '123'
 auth = (username + ":" + password).encode("base64")
 header = {'Authorization': 'Basic %s' % auth, 'Connection': 'Keep-Alive'}

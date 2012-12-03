@@ -59,7 +59,7 @@ def create_room():
     return jsonify(room_name=room.title, room_id=room.id)
 
 
-@app.route("/join_room/<int:room_id>", methods=("POST",))
+@app.route("/join_room/<int:room_id>/", methods=("POST",))
 @require_auth
 def join_room(room_id):
     """
@@ -82,7 +82,7 @@ def join_room(room_id):
     return Response("successful join room %s" % room.title, 200)
 
 
-@app.route("/send_message/<int:room_id>", methods=("POST", ))
+@app.route("/send_message/<int:room_id>/", methods=("POST", ))
 @require_auth
 def send_message(room_id):
     """
@@ -95,6 +95,7 @@ def send_message(room_id):
         if the user is not in this room, return 406
     """
     sender = g.user
+    print "sender is %s" % sender
     if not online_users.is_online(sender):
         return login_first()
     room = ChatRoom.query.get(room_id)
@@ -110,7 +111,7 @@ def send_message(room_id):
     return Response("successful send message to room %s" % room.title, 200)
 
 
-@app.route("/exit_room/<int:room_id>", methods=("POST", ))
+@app.route("/exit_room/<int:room_id>/", methods=("POST", ))
 @require_auth
 def exit_room(room_id):
     """
@@ -137,7 +138,7 @@ def exit_room(room_id):
     return Response("successful exit room %s" % room.title, 200)
 
 
-@app.route("/update_message/<int:room_id>", methods=("POST", ))
+@app.route("/update_message/<int:room_id>/", methods=("GET", ))
 @require_auth
 def update_message(room_id):
     """
@@ -156,6 +157,7 @@ def update_message(room_id):
             }, the lastest 40 messages(if have enough messages)
         if the room is not exist, return 400
         if the 'Keep-Alive' is not in 'Connection' field, return 406
+        if the user is not in this room, return 406
     """
     connection = request.headers.get('Connection', None)
     if connection is None or connection.lower() != 'keep-alive':
@@ -164,6 +166,9 @@ def update_message(room_id):
     room = ChatRoom.query.get(room_id)
     if room is None:
         return room_not_exist_by_id(room_id)
+    update_user = g.user
+    if not room_manager.is_in_room(room_id, update_user.id):
+        return not_in_room_by_id(room_id)
     room_manager.update_message(room_id)
     # construct the message json
     msgs = room.records.order_by(desc(ChatRoomRecord.send_time)).all()
@@ -183,7 +188,7 @@ def update_message(room_id):
     return jsonify(messages=data)
 
 
-@app.route("/get_room_user_num/<int:room_id>", methods=("GET", ))
+@app.route("/get_room_user_num/<int:room_id>/", methods=("GET", ))
 @require_auth
 def get_room_user_num(room_id):
     """
@@ -201,7 +206,7 @@ def get_room_user_num(room_id):
     return jsonify(user_num=user_num)
 
 
-@app.route("/get_room_users/<int:room_id>", methods=("GET", ))
+@app.route("/get_room_users/<int:room_id>/", methods=("GET", ))
 @require_auth
 def get_room_users(room_id):
     """
@@ -231,7 +236,7 @@ def get_room_users(room_id):
     return jsonify(users=data)
 
 
-@app.route("/get_room_info/<int:room_id>", methods=("GET", ))
+@app.route("/get_room_info/<int:room_id>/", methods=("GET", ))
 @require_auth
 def get_room_info(room_id):
     """

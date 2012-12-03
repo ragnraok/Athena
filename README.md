@@ -11,12 +11,3 @@ Athena
 then run it:
 
 ``python app.py``
-
-=======
-``pip install -r requirements.txt``
-
-``make database``
-
-then run it:
-
-``python app.py``

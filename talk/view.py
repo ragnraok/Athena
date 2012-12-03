@@ -46,7 +46,7 @@ def launch_talk(talk_to_user_id):
     return Response("launch talk to %s" % talk_to_user.username, 200)
 
 
-@app.route('/check_new_talk/', methods=('POST', ))
+@app.route('/check_new_talk/', methods=('GET', ))
 @require_auth
 def check_new_talk():
     """
