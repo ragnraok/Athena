@@ -2,7 +2,7 @@ import httplib
 import json
 
 login_json = json.dumps({'username_or_mail': 'ragnarok', 'password': '123'})
-register_json = json.dumps({'username': 'okone1288', 'password': '123', 'email': 'okone1288@gmail.com'})
+register_json = json.dumps({'username': 'okone', 'password': '123', 'email': 'okone1288@gmail.com'})
 dummy_json = json.dumps({'no_data': 'no_data'})
 
 user = 'ragnarok'
@@ -40,9 +40,9 @@ if __name__ == '__main__':
     print 'test login'
     test(site, port, 'POST', login_url, header, login_json)
 
-    #print deli
-    #print 'test register'
-    #test(site, port, 'POST', register_url, header, register_json)
+    print deli
+    print 'test register'
+    test(site, port, 'POST', register_url, header, register_json)
 
     print deli
     print 'test heartbeat'
